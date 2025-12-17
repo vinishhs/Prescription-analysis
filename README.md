@@ -4,7 +4,6 @@ A tool to analyze medical prescriptions — extract meaningful data, detect patt
 
 This repository contains both **frontend** and **backend** code for a prescription analysis application.
 
----
 
 ## ⭐ Features
 
@@ -13,5 +12,6 @@ This repository contains both **frontend** and **backend** code for a prescripti
 ✅ Validate prescriptions for common errors  
 ✅ Provide summary statistics and insights  
 ✅ Modular backend and frontend structure
+
 
 
