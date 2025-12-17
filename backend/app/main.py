@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import logging
@@ -35,7 +35,6 @@ async def verify_prescription(request: PrescriptionRequest):
             extracted_drugs = extract_drugs_from_text(request.text_input)
             logger.info(f"Extracted drugs from text: {extracted_drugs}")
             # Convert extracted drugs to Drug objects if needed
-            from .models import Drug
             for drug_info in extracted_drugs:
                 drugs_to_check.append(Drug(
                     name=drug_info.get('name', ''),
@@ -63,17 +62,20 @@ async def verify_prescription(request: PrescriptionRequest):
         # 4. Suggest alternatives for problematic drugs
         alternative_suggestions = []
         for alert in interaction_alerts + dosage_alerts:
-        # Find the target drug
+            # Find the target drug
             target_drug_name = alert.drug_a if hasattr(alert, 'drug_a') else alert.drug
-            target_drug = next((d for d in drugs_to_check if d.name.lower() == target_drug_name.lower()), None)
+            target_drug = next(
+                (d for d in drugs_to_check if d.name.lower() == target_drug_name.lower()),
+                None
+            )
             if target_drug:
-            # Use the appropriate attribute based on alert type
-                if hasattr(alert, 'description'):  # It's an InteractionAlert
+                # Use the appropriate attribute based on alert type
+                if hasattr(alert, 'description'):  # InteractionAlert
                     reason = alert.description
-                else:  # It's a DosageAlert
-                    reason = alert.issue  # ← Use 'issue' for DosageAlert
-        
-                alts = get_alternatives(target_drug, request.patient, reason)  # ← Pass the reason
+                else:  # DosageAlert
+                    reason = alert.issue
+
+                alts = get_alternatives(target_drug, request.patient, reason)
                 alternative_suggestions.extend(alts)
 
         # 5. Determine overall safety
